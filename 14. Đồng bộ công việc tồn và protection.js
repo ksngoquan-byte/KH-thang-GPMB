@@ -1049,21 +1049,44 @@ function ghiCongViecTonTheoDuAnVaoDong_(sheet, soDong, item, marker) {
 
 function dinhDangDongCongViecTonMoi_(sheet, soDong) {
   const rangeDong = sheet.getRange(soDong, 1, 1, 16);
+  const rangeKeHoach = sheet.getRange(soDong, 1, 1, 10);
+  const rangeDanhGia = sheet.getRange(soDong, 11, 1, 6);
   try {
     rangeDong.breakApart();
   } catch (error) {}
+
   rangeDong.clearContent();
   rangeDong.clearNote();
   rangeDong.clearFormat();
-  rangeDong.setBackground('#ffffff');
+  rangeKeHoach.setBackground('#D9EAF7');
+  rangeDanhGia.setBackground('#FFF2CC');
+  rangeDong.setFontFamily('Arial');
+  rangeDong.setFontSize(9);
   rangeDong.setFontWeight('normal');
   rangeDong.setFontStyle('normal');
   rangeDong.setFontLine('none');
+  rangeDong.setFontColor('#000000');
   rangeDong.setWrap(true);
   rangeDong.setVerticalAlignment('middle');
-  rangeDong.setHorizontalAlignment('center');
+  sheet.getRange(soDong, 1).setHorizontalAlignment('center');
   sheet.getRange(soDong, 2).setHorizontalAlignment('left');
-  sheet.getRange(soDong, 1, 1, 16).setBorder(true, true, true, true, true, true);
+  sheet.getRange(soDong, 3).setHorizontalAlignment('center');
+  sheet.getRange(soDong, 4).setHorizontalAlignment('left');
+  sheet.getRange(soDong, 5, 1, 3).setHorizontalAlignment('center');
+  sheet.getRange(soDong, 8, 1, 2).setHorizontalAlignment('center');
+  sheet.getRange(soDong, 10).setHorizontalAlignment('left');
+  sheet.getRange(soDong, 14).setHorizontalAlignment('center');
+  sheet.getRange(soDong, 15, 1, 2).setHorizontalAlignment('left');
+  rangeDong.setBorder(
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    '#000000',
+    SpreadsheetApp.BorderStyle.SOLID
+  );
 }
 
 function taoMarkerCongViecTonTheoDuAn_(tenSheetNguon, soDongNguon, tenDuAn) {
