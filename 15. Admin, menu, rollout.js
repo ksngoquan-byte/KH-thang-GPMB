@@ -1062,7 +1062,10 @@ function chuanHoaCauTrucCongViecTrenSheet_(sheet) {
       continue;
     }
 
-    const cap = xacDinhCapCongViecTuGiaTriA_(giaTriA);
+    let cap = xacDinhCapCongViecTuGiaTriA_(giaTriA);
+    if (cap === null && giaTriA === '' && giaTriB !== '' && maCvTheoCap[0]) {
+      cap = 1;
+    }
     if (cap === null) {
       ketQuaA.push([giaTriA]);
       ketQuaC.push([giaTriC]);

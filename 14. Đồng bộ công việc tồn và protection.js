@@ -801,7 +801,8 @@ function dongBoMotDuAnSangThangSau_(sheetNguon, sheetDich, keyDuAn, dsCongViecTo
   }
 
   const dsDongAuto = layDanhSachDongAutoTrongDuAn_(sheetDich, thongTinDuAnDich);
-  const dsDongTaiSuDung = lamSachDongAutoTrongDuAn_(sheetDich, dsDongAuto);
+  lamSachDongAutoTrongDuAn_(sheetDich, dsDongAuto);
+  const dsDongTaiSuDung = layDanhSachDongTrongDauDuAn_(sheetDich, thongTinDuAnDich, dsCongViecTon.length);
   ketQuaTongHop.soDongXoa = dsDongTaiSuDung.length;
 
   if (!dsCongViecTon.length) {
@@ -812,7 +813,7 @@ function dongBoMotDuAnSangThangSau_(sheetNguon, sheetDich, keyDuAn, dsCongViecTo
   const dsDongDich = dsDongTaiSuDung.slice();
 
   if (soDongCanChen > 0) {
-    const dongChen = thongTinDuAnDich.dongChenMoi;
+    const dongChen = thongTinDuAnDich.dongBatDauDuLieu + dsDongTaiSuDung.length;
     sheetDich.insertRowsBefore(dongChen, soDongCanChen);
     for (let i = 0; i < soDongCanChen; i++) {
       dsDongDich.push(dongChen + i);
@@ -962,6 +963,26 @@ function layDanhSachDongAutoTrongDuAn_(sheet, thongTinDuAn) {
   return ketQua;
 }
 
+function layDanhSachDongTrongDauDuAn_(sheet, thongTinDuAn, soLuongToiDa) {
+  const ketQua = [];
+  const gioiHan = Math.max(Number(soLuongToiDa || 0), 0);
+  if (!gioiHan || !thongTinDuAn || thongTinDuAn.dongKetThucDuLieu < thongTinDuAn.dongBatDauDuLieu) return ketQua;
+
+  const soDong = thongTinDuAn.dongKetThucDuLieu - thongTinDuAn.dongBatDauDuLieu + 1;
+  const values = sheet.getRange(thongTinDuAn.dongBatDauDuLieu, 1, soDong, 16).getDisplayValues();
+
+  for (let i = 0; i < values.length && ketQua.length < gioiHan; i++) {
+    const laDongTrong = values[i].every(function(value) {
+      return String(value || '').trim() === '';
+    });
+
+    if (!laDongTrong) break;
+    ketQua.push(thongTinDuAn.dongBatDauDuLieu + i);
+  }
+
+  return ketQua;
+}
+
 function lamSachDongAutoTrongDuAn_(sheet, dsDongAuto) {
   const ketQua = (dsDongAuto || []).slice().sort(function(a, b) {
     return a - b;
@@ -1021,6 +1042,7 @@ function ghiCongViecTonTheoDuAnVaoDong_(sheet, soDong, item, marker) {
   values[8] = item.giaTriI || '';
 
   sheet.getRange(soDong, 1, 1, 16).setValues([values]);
+  sheet.getRange(soDong, 1).clearContent().clearNote();
   sheet.getRange(soDong, 1, 1, 16).clearNote();
   datMarkerCongViecTonTheoDong_(sheet, soDong, marker);
 }
@@ -1032,8 +1054,16 @@ function dinhDangDongCongViecTonMoi_(sheet, soDong) {
   } catch (error) {}
   rangeDong.clearContent();
   rangeDong.clearNote();
+  rangeDong.clearFormat();
+  rangeDong.setBackground('#ffffff');
+  rangeDong.setFontWeight('normal');
+  rangeDong.setFontStyle('normal');
+  rangeDong.setFontLine('none');
   rangeDong.setWrap(true);
   rangeDong.setVerticalAlignment('middle');
+  rangeDong.setHorizontalAlignment('center');
+  sheet.getRange(soDong, 2).setHorizontalAlignment('left');
+  sheet.getRange(soDong, 1, 1, 16).setBorder(true, true, true, true, true, true);
 }
 
 function taoMarkerCongViecTonTheoDuAn_(tenSheetNguon, soDongNguon, tenDuAn) {
